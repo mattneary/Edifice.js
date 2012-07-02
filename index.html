@@ -1,0 +1,77 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<h1>Edifice.js</h1>
+		<div id="content">
+			<div id="api" class="column">
+				<h2>The Super Simple API</h2>
+				<div class="code">
+					<pre>
+var services = new Array(
+	"/users/group/:id/",
+	"/users/tag/:tag",
+	"/users/:id/"	
+);					
+edifice.REST("GET", services, req, edifice.application_chain(
+	edifice.method_call(res, "end"), 
+	JSON.stringify,
+	edifice.method_call(users, "find")
+));					
+					</pre>
+				</div><br>
+				Accept GET requests to a variety of RESTful endpoints. Avoid ever writing an explicit function by chaining together simple manipulators of the url parameters.
+			</div>
+			<div id="templates" class="column">
+				<h2>The Super Simple Templated HTML Server</h2>
+				<div class="code">
+					<pre>
+edifice.serve_file(
+	["moderator.html", "newbie.html"], 
+	edifice.method_call(res, "end"), 
+	users.map(edifice.copy_attribute(
+		"status", 
+		"__tmpl__", 
+		edifice.appender(".html")
+	))
+);							
+					</pre>
+				</div><br>
+				Serve different template files for your raw data points based on a trait they have. Serving these files is as simple as a function call.
+			</div>
+		</div>
+		<style>
+			body {
+				margin: 0 50px; padding: 0;
+				font-family: Helvetica;
+			}
+			h1 {
+				margin: 0; padding: 0;
+				width: 100%;
+				text-align: center;
+				font-size: 64px;
+				margin: 10px 0;
+			}
+			#content {
+				position: relative;
+			}
+			.column {	
+				height: 100%;
+				width: 50%;
+				float: left;
+				box-sizing: border-box;
+				padding: 10px;
+			}
+			.code {
+				background: #333;	
+				height: 300px;
+				width: 100%;	
+				color: white;
+				padding: 5px;
+				overflow: scroll;						
+			}						
+		</style>
+	</body>
+</html>
