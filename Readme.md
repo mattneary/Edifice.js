@@ -2,6 +2,7 @@ Edifice.js
 ==========
 - An open-ended library for extremely simple `html` templating based on `RESTful URLs` that gets rid of boiler-plate code.
 - Templating allows for inline javascript (`${...}`) and file importing (`@include<file.html, {}>`)
+- Multiple template files may be used with a single array of data points. Specify the file to use with the `__tmpl__` attribute.
 - Includes various high order functions to keep code clean, e.g., 
 
 		edifice.REST("GET", "/users/:id/", req, edifice.application_chain(
@@ -18,8 +19,7 @@ Introduction
 			switch( req.url ) {
 				case "/home/":  
 					fs.readFile("index.html", 'utf8', function(error, data) {
-						res.write(data);
-						res.end();			
+						res.end(data);			
 					});
 					break;
 				//...
@@ -29,14 +29,12 @@ Introduction
 
 Goes to:
 
-	(function($) {
-		$.listen("8080", function(req, res) {
-			$.REST("GET", "/home/", req, function() {
-				$.serve_file("index.html", $.method_call(res, "end"));
-			});
-			//...
+	edifice.listen("8080", function(req, res, $) {
+		$.REST("GET", "/home/", req, function() {
+			$.serve_file("index.html", $.method_call(res, "end"));
 		});
-	})(edifice);
+		//...
+	});
 
 The more complicated problems are where `edifice` really simplifies your code, but this code still shows off some of the best features of `edifice`. The `REST` function let's you handle `RESTful URLs` in a single function call, with parameters passed to the callback; `serve_file` reads a file to a callback, with template data as an optional third parameter; `method_call` allows an object's method to be passed as a callback to a function.
 
@@ -153,7 +151,7 @@ Functional Utilities
 
 	Splice the passed arguments to only pass certain parameters. Useful for masking the extra parameters in `map`. e.g., 
 	
-		nums.map(partial_application(parseInt, [0, 1]))
+		nums.map(edifice.partial_application(parseInt, [0, 1]))
 	
 
 - **method_call: function(obj, key) {}**

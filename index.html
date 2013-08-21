@@ -1,42 +1,88 @@
 <!DOCTYPE>
 <html>
 	<head>
-		<title></title>
+		<title>Edifice.js | a platform for data centric node apps</title>
 	</head>
 	<body>
-		<h1>Edifice.js</h1>
+		<div id="navigation">
+			<a href="">home</a>
+			<a href="">intro</a>
+			<a href="">docs</a>
+			<a href="">github</a>
+			<span id="author">by <a href="http://mattneary.com">Matt Neary</a></span>
+		</div>
+		<div id="header">
+			<br>
+			<h1>Edifice.js</h1>
+			<h3>A node.js module for data centric apps with intuitive templating and simple handling of RESTful requests. It provides structure, cf. <em>edifice</em>, letting you focus on things better than infrastructure.</h3>
+		</div>	
+		<pre id="hero">
+/*	  ._____________
+	 /             /
+	/_____________/| .____________
+	|             #|/            /|
+	| [] [+] []  [ |____________/ |
+	| [] [+] []   /|            |/|
+	| [] [+] []  [/|            / |
+	| [] [+] []  //|           /| /
+	| [] [+] []  [/|            //|
+	| [] [+] []  |/|    ._.     |/|
+	| [] ._. []  |/|____| |_____|/
+	|____| |_____|/ 
+                    .___  ._    ._  .___  ._    .__   .___
+                    |#.#\ |#\   |#| |###\ |#|  /###\  |#.#\
+                    |#|_  |##\  |#| |#|_  |#| /##/\#\ |#|_
+                    |###| |#]#| |#| |###| |#| |#|  ._ |###|
+                    |#|_  |##/  |#| |#|   |#| \##\/#/ |#|_
+                    |###\ |#/   |#| |#|   |#|  \###/  |###\					
+*/		
+		</pre>
 		<div id="content">
 			<div id="api" class="column">
-				<h2>The Super Simple API</h2>
+				<h2>Working JSON API</h2>				
 				<div class="code">
-					<pre>
-var services = new Array(
-	"/users/group/:id/",
-	"/users/tag/:tag",
-	"/users/:id/"	
-);					
-edifice.REST("GET", services, req, edifice.application_chain(
-	edifice.method_call(res, "end"), 
-	JSON.stringify,
-	edifice.method_call(users, "find")
-));					
+					<pre>// provides JSON of users matching requests
+// NB: the third parameter is an alias of edifice
+edifice.listen("8080", function(req, req, $) {
+	var users = new $.Model([
+		{id: 1, tag: "a", group: 2},
+	 	{id: 2, tag: "a", group: 1}
+	]);
+	var gets = new Array(
+		"/users/groups/:group/",
+		"/users/tag/:tag",
+		"/users/:id/"	
+	);					
+	$.REST("GET", gets, req, $.application_chain(
+		$.method_call(res, "end"), 
+		JSON.stringify,
+		$.method_call(users, "find")
+	));		
+});			
 					</pre>
 				</div><br>
 				Accept GET requests to a variety of RESTful endpoints. Avoid ever writing an explicit function by chaining together simple manipulators of the url parameters.
 			</div>
 			<div id="templates" class="column">
-				<h2>The Super Simple Templated HTML Server</h2>
+				<h2>Working HTML Template Server</h2>
 				<div class="code">
-					<pre>
-edifice.serve_file(
-	["moderator.html", "newbie.html"], 
-	edifice.method_call(res, "end"), 
-	users.map(edifice.copy_attribute(
-		"status", 
-		"__tmpl__", 
-		edifice.appender(".html")
-	))
-);							
+					<pre>// provides HTML user list to be embedded in page
+// embed with @include&lt;file, data> or AJAX
+edifice.listen("8080", function(req, res, $) {
+	var users = new $.Model([
+		{name: "Matt", status: "moderator"},
+	 	{name: "Joe", status: "newbie"}
+	]);
+	$.serve_file(
+		["moderator.html", "newbie.html"], 
+		$.method_call(res, "end"), 
+		users.map($.copy_attribute(
+			"status", 
+			"__tmpl__", 
+			$.appender(".html")
+		));
+	);					
+});		
 					</pre>
 				</div><br>
 				Serve different template files for your raw data points based on a trait they have. Serving these files is as simple as a function call.
@@ -47,15 +93,41 @@ edifice.serve_file(
 				margin: 0 50px; padding: 0;
 				font-family: Helvetica;
 			}
-			h1 {
-				margin: 0; padding: 0;
+			#navigation {
+				height: 30px;
+				background: #333;
+				padding: 5px;
+			}
+			#navigation #author {
+				float: right;
+				color: red;
+			}
+			#navigation a {
+				color: white;
+				margin-right: 10px;
+			}
+			#header {
 				width: 100%;
 				text-align: center;
+			}
+			#header h1 {
+				margin: 0; padding: 0;
+				text-align: center;
 				font-size: 64px;
-				margin: 10px 0;
+				margin: 0 0 10px 0;
+			}
+			#hero {
+				width: 500px;
+				overflow: hidden;
+				margin: auto;
+			}
+			h3 {
+				color: #343434;
 			}
 			#content {
 				position: relative;
+				margin-top: 0;
+				padding: 0;
 			}
 			.column {	
 				height: 100%;
@@ -71,6 +143,9 @@ edifice.serve_file(
 				color: white;
 				padding: 5px;
 				overflow: scroll;						
+			}
+			pre {
+				font-family: monospace;
 			}						
 		</style>
 	</body>
