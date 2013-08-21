@@ -47,7 +47,7 @@ The more complicated problems are where `edifice` really simplifies your code, b
 RESTful Requests
 ================
 
-- **edifice.listen: function(port, callback(req,res)) {}**
+- **edifice.listen**: *String => (Req => Res => Nothing) => Nothing*
 	
 	Call this to delegate requests to handlers for different `URLs` and `methods`. For example:
 
@@ -59,7 +59,8 @@ RESTful Requests
 	})
 	```
 
-- **edifice.REST(method(s), pattern, request, callback(params))**
+- **edifice.REST**: *[a => b] => String => Req => (Object => Nothing) => Nothing*
+(method(s), pattern, request, callback(params))**
 	
 	Specify method(s) to accept, a `RESTful` pattern to match, the current `request` and a callback to handle requests. For example:
 
@@ -122,7 +123,7 @@ Templating
 	}>		
 	```
 
-- **edifice.serve_file**(filename(s), cb, data_point(s))
+- **edifice.serve_file**: *([String] | String) => (String => a) => Object*
 	
 	Serve parsed `template` files with specified `filename` and `data` and output them with a callback function. For example:
 
@@ -163,22 +164,22 @@ Templating
 
 Functional Utilities
 ====================
-- **apply_to_potential_children: function(data, f, group_cb) {}**
+- **apply_to_potential_children**: *(a => b) => ((a | [a]) => b)*
 
 	Either call `f(data)` or map `data` to `f` if it's an array. Fires `group_cb` with whether or not it's mapped.
 
-- **application_chain**: function(*functions...*) {}
+- **application_chain**: *(a => b) => ... => (c => d) => (c => b)*
 
 	Perform a `function` composition of a series of `functions` and receive a single `function`. In math notation, `(f•g•...)(x,y,...)`
 
-- **partial_application**: function(f, range) {}
+- **partial_application**: *(a => b => ... => c) => [Int] => (a => ... => c)*
 
 	Splice the passed arguments to only pass certain parameters. Useful for masking the extra parameters in `map`. e.g., 
 	
 		nums.map(edifice.partial_application(parseInt, [0, 1]))
 	
 
-- **method_call**: function(obj, key) {}
+- **method_call**: *Object => String => (a => b)*
 
 	Equivalent to `obj[key]` but solves the issue of aliasing a function dependent on `this`. For example:
 
@@ -186,14 +187,14 @@ Functional Utilities
 	words.map(edifice.method_call(res, "write"));
 	```		
 
-- **is_equal_to**: function(constant) {}
+- **is_equal_to**: *a => (a => Boolean)*
 
 	Test equivalence to a constant. Useful with `filter`.
 
-- **copy_attribute**: function(attr_a, attr_b, mapper) {}
+- **copy_attribute**: *String => String => (a => b) => (Object => Object)*
 
-	Copy the value of one attribute to another. Optionally filter value a with a callback `mapper`. Useful with `map`.
+	Copy the value of one attribute to another. Optionally filter the first value with a callback `mapper`. Useful with `map`.
 
-- **prepender**: function(constant) {} or **appender**: function(constant) {}
+- **prepender**: *a => [a] => [a]* or **appender**: *a => [a] => [a]*
 
 	Prepend or append a constant to an item. Useful with `map`.
